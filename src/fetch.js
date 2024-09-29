@@ -1,6 +1,3 @@
-// require('es6-promise').polyfill();
-const crossFetch = require('cross-fetch');
-
 const checkStatus = (response) => {
   if (response.status >= 200 && response.status < 300) {
     return response;
@@ -17,23 +14,13 @@ const checkStatus = (response) => {
 
 const parseJSON = (response) => response.json();
 
-const fetchUrl = (url) => crossFetch(url);
+const fetchUrl = (url) => fetch(url);
 
-const fetch = (url, resolve, reject) => {
-  fetchUrl(url)
-    .then(checkStatus)
-    .then(parseJSON)
-    .then((data) => {
-      // console.log('request succeeded with JSON response', data);
-      resolve(data);
-    })
-    .catch((error) => {
-      // console.log('request failed', { error });
-      reject(error);
-    });
-};
-
-module.exports = fetch;
+module.exports = (url, resolve, reject) =>
+  fetch(url)
+    .then((r) => r.json())
+    .then(resolve)
+    .catch(reject);
 // exports below for unit test purposes
 module.exports.fetchUrl = fetchUrl;
 module.exports.parseJSON = parseJSON;
